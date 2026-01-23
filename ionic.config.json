@@ -1,0 +1,7 @@
+{
+  "name": "Piensa",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
