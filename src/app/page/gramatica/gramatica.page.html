@@ -1,0 +1,69 @@
+<ion-split-pane contentId="main-content">
+  <ion-menu contentId="main-content" type="overlay">
+    <ion-content class="sidebar-content">
+      <div class="sidebar-brand">
+        <div class="logo-box">
+          <ion-icon name="school"></ion-icon>
+        </div>
+        <span>Academia <b></b></span>
+      </div>
+
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <input type="text" placeholder="Buscar concepto...">
+      </div>
+
+      <ion-list lines="none" class="menu-list">
+        @for (cat of categorias; track cat.title) {
+          <ion-item 
+            (click)="seleccionarCategoria(cat)"
+            [class.is-active]="cat.active" 
+            button="true" 
+            detail="false">
+            <div class="indicator" [style.background]="cat.color"></div>
+            <ion-icon [name]="cat.icon" slot="start"></ion-icon>
+            <ion-label>{{ cat.title }}</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-page" id="main-content">
+    <ion-content [fullscreen]="true">
+      <div class="main-wrapper">
+        
+        <header class="content-header">
+          <div class="status-badge">
+            <span class="pulse-dot"></span>
+            Módulo Activo
+          </div>
+          <h1>Gramática Básica</h1>
+          <p>Domina las reglas fundamentales del español</p>
+        </header>
+
+        <div class="glass-card">
+          <h2 class="section-title">Elige un submódulo para comenzar:</h2>
+          
+          <ion-grid>
+            <ion-row>
+              @for (sub of submodulos; track sub.id) {
+                <ion-col size="12" size-sm="6" size-lg="4">
+                  <div class="sub-card ion-activatable ripple-parent" (click)="navegarASubmodulo(sub.id)">
+                    <div class="icon-circle" [style.background-color]="sub.color + '20'">
+                      <ion-icon [name]="sub.icono" [style.color]="sub.color"></ion-icon>
+                    </div>
+                    <h3>{{ sub.nombre }}</h3>
+                    <p>Explorar contenido</p>
+                    <ion-ripple-effect></ion-ripple-effect>
+                  </div>
+                </ion-col>
+              }
+            </ion-row>
+          </ion-grid>
+        </div>
+
+      </div>
+    </ion-content>
+  </div>
+</ion-split-pane>
