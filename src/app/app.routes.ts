@@ -9,5 +9,9 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',
+  },  {
+    path: 'gramatica',
+    loadComponent: () => import('./page/gramatica/gramatica.page').then( m => m.GramaticaPage)
   },
+
 ];
