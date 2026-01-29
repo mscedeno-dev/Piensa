@@ -23,7 +23,18 @@ import {
   libraryOutline,
 } from 'ionicons/icons';
 
-type ModuloId = 'gramatica' | 'ortografia' | 'puntuacion' | 'redaccion' | 'comprension' | 'lecciones';
+/**
+ * ✅ OJO: tu ruta real es /compresion (sin "n")
+ * entonces el id también debe ser compresion para que:
+ * progress_compresion coincida con localStorage
+ */
+type ModuloId =
+  | 'gramatica'
+  | 'ortografia'
+  | 'puntuacion'
+  | 'redaccion'
+  | 'compresion'
+  | 'lecciones';
 
 interface ModuloCard {
   id: ModuloId;
@@ -51,7 +62,10 @@ export class HomePage implements OnInit {
     { id: 'ortografia',  titulo: 'Ortografía',  nivel: 'Nivel fácil',   subs: 5, route: '/ortografia',  theme: 'theme-green',  icon: 'pencil-outline',        porcentaje: 0 },
     { id: 'puntuacion',  titulo: 'Puntuación',  nivel: 'Nivel medio',   subs: 5, route: '/puntuacion',  theme: 'theme-amber',  icon: 'shapes-outline',        porcentaje: 0 },
     { id: 'redaccion',   titulo: 'Redacción',   nivel: 'Nivel medio',   subs: 5, route: '/redaccion',   theme: 'theme-amber',  icon: 'document-text-outline', porcentaje: 0 },
-    { id: 'comprension', titulo: 'Comprensión', nivel: 'Nivel difícil', subs: 5, route: '/comprension', theme: 'theme-red',    icon: 'library-outline',       porcentaje: 0 },
+
+    // ✅ CORREGIDO: era 'comprension' y '/comprension'
+    { id: 'compresion',  titulo: 'Comprensión', nivel: 'Nivel difícil', subs: 5, route: '/compresion',  theme: 'theme-red',    icon: 'library-outline',       porcentaje: 0 },
+
     { id: 'lecciones',   titulo: 'Lecciones',   nivel: 'Módulo final',  subs: 0, route: '/lecciones',   theme: 'theme-indigo', icon: 'school',                porcentaje: 0 },
   ];
 
@@ -63,7 +77,6 @@ export class HomePage implements OnInit {
   ringBackground = 'conic-gradient(#e2e8f0 0deg, #e2e8f0 360deg)';
 
   constructor(private router: Router) {
-    // ✅ REGISTRO COMPLETO DE ICONOS (esto arregla que no se vean)
     addIcons({
       school,
       refreshOutline,
@@ -86,12 +99,12 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.recalcular();
     this.modulosFiltrados = [...this.modulos];
-    
   }
-ionViewWillEnter() {
-  this.recalcular();
-  this.filtrar();
-}
+
+  ionViewWillEnter() {
+    this.recalcular();
+    this.filtrar();
+  }
 
   filtrar() {
     const q = this.busqueda.trim().toLowerCase();
@@ -111,8 +124,6 @@ ionViewWillEnter() {
   }
 
   private recalcular() {
-    // ✅ Lee el progreso por módulo desde localStorage
-    // Usa: progress_gramatica, progress_ortografia, etc. (0..100)
     this.modulos = this.modulos.map((m) => {
       const val = Number(localStorage.getItem(`progress_${m.id}`) ?? '0');
       return { ...m, porcentaje: isNaN(val) ? 0 : Math.max(0, Math.min(100, val)) };

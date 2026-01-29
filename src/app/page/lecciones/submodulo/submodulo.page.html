@@ -1,0 +1,105 @@
+<ion-header class="topbar" translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/lecciones"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>{{ titulo }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="irHome()">
+        <ion-icon name="home-outline" slot="start"></ion-icon>
+        Inicio
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="page-bg">
+    <div class="wrap">
+
+      <header class="hero">
+        <h1>{{ titulo }}</h1>
+        <p>{{ descripcion }}</p>
+
+        <div class="actions">
+          <ion-button class="primary" (click)="submit()" [disabled]="submitted">
+            Finalizar
+          </ion-button>
+
+          <ion-button fill="outline" (click)="generar()">
+            Reintentar (nuevo orden)
+          </ion-button>
+
+          <div class="score" *ngIf="submitted">
+            Resultado: <b>{{ score }}</b> / <b>{{ questions.length }}</b>
+          </div>
+        </div>
+      </header>
+
+      <div class="glass">
+
+        <div class="q" *ngFor="let q of questions; let qi = index">
+          <div class="q-head">
+            <div class="q-num">Pregunta {{ qi + 1 }}</div>
+            <div class="q-type">
+              <span *ngIf="q.type === 'single'">Selección simple</span>
+              <span *ngIf="q.type === 'multiple'">Selección múltiple</span>
+              <span *ngIf="q.type === 'match'">Unir</span>
+            </div>
+          </div>
+
+          <div class="q-text">{{ q.prompt }}</div>
+
+          <!-- SINGLE -->
+          <div class="opts" *ngIf="q.type === 'single'">
+            <button
+              class="opt"
+              *ngFor="let opt of q.options; let oi = index"
+              [class.selected]="singleAnswers[qi] === oi"
+              (click)="singleAnswers[qi] = oi"
+              [disabled]="submitted">
+              {{ opt }}
+            </button>
+          </div>
+
+          <!-- MULTIPLE -->
+          <div class="multi" *ngIf="q.type === 'multiple'">
+            <label class="check" *ngFor="let opt of q.options; let oi = index">
+              <input
+                type="checkbox"
+                [disabled]="submitted"
+                [checked]="(multipleAnswers[qi] || []).includes(oi)"
+                (change)="toggleMultiple(qi, oi, $any($event.target).checked)"
+              />
+              <span>{{ opt }}</span>
+            </label>
+          </div>
+
+          <!-- MATCH -->
+          <div class="match" *ngIf="q.type === 'match'">
+            <div class="match-row" *ngFor="let left of q.left; let li = index">
+              <div class="left">{{ left }}</div>
+
+              <select
+                [disabled]="submitted"
+                (change)="setMatch(qi, li, +$any($event.target).value)">
+                <option value="" selected disabled>Selecciona…</option>
+                <option *ngFor="let r of q.right; let ri = index" [value]="ri">
+                  {{ r }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- EXPLICACIÓN (al final) -->
+          <div class="explain" *ngIf="submitted">
+            {{ q.explain }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ion-content>
